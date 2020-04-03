@@ -1,0 +1,72 @@
+﻿<Window x:Class="MySweetyPhone_PC.Forms.Main"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MySweetyPhone_PC.Forms"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF" 
+        fw:AcrylicWindow.Enabled="True" 
+        fw:AcrylicWindow.NoiseOpacity="0.01"
+        FontSize="15" Height="600" Width="1080" MinHeight="600" MinWidth="900" WindowStyle="None" AllowsTransparency="True" Background="Transparent" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid fw:PointerTracker.Enabled="True" Background="#101F1F1F">
+            <StackPanel>
+                <TextBlock HorizontalAlignment="Right" Padding="10" FontSize="30" Text="MySweetyPhone" FontWeight="Bold" FontFamily="Arial Black">
+                    <TextBlock.Foreground>
+                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                            <GradientStop Color="#d53869" Offset="0"/>
+                            <GradientStop Color="#cbad6d" Offset="1"/>
+                        </LinearGradientBrush>
+                    </TextBlock.Foreground>
+
+                </TextBlock>
+                <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft" ScrollViewer.CanContentScroll="True">
+                    <Button Background="{x:Null}" BorderBrush="{x:Null}"  Click="Exit">
+                        <materialDesign:PackIcon Kind="ExitToApp" Height="20" Width="20"/>
+                    </Button>
+                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Click="Refresh">
+                        <materialDesign:PackIcon Kind="Refresh" Height="20" Width="20"/>
+                    </Button>
+                    <TextBlock Name="LoginNav" HorizontalAlignment="Stretch" Margin="15, 15,15,15" Text="Меню" FontWeight="DemiBold"></TextBlock>
+                </StackPanel>
+                <ListView Foreground="White" Name="Menu">
+                    <ListViewItem Padding="1" Selected="Selected" Name="DevicesListNav">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Devices" Margin="15"/>
+                            <TextBlock Text="Устройства" VerticalAlignment="Center" FontSize="16"/>
+                        </StackPanel>
+                    </ListViewItem>
+                    <ListViewItem Padding="1" Selected="Selected" Name="SavedNav" AutomationProperties.Name="SavedNav">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Send" Margin="15"/>
+                            <TextBlock Text="Избранное" VerticalAlignment="Center" FontSize="16"/>
+                        </StackPanel>
+                    </ListViewItem>
+                    <ListViewItem Padding="1" Selected="Selected" Name="SClientNav">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Leak" Margin="15"/>
+                            <TextBlock Text="Подключиться" VerticalAlignment="Center" FontSize="16"/>
+                        </StackPanel>
+                    </ListViewItem>
+                    <ListViewItem Padding="1" Selected="Selected" Name="SServerNav">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Wifi" Margin="15"/>
+                            <TextBlock Text="Новая Сессия" VerticalAlignment="Center" FontSize="16"/>
+                        </StackPanel>
+                    </ListViewItem>
+                </ListView>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Column="1" Background="#AF282828">
+            <Frame x:Name="Content" Margin="0,0,0,0" NavigationUIVisibility="Hidden"/>
+
+        </Grid>
+    </Grid>
+</Window>

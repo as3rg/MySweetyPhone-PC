@@ -1,0 +1,35 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MySweetyPhone_PC.Forms"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF" 
+        xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="MySweetyPhone_PC.Forms.Login"
+        mc:Ignorable="d" 
+        fw:AcrylicWindow.Enabled="True" 
+        fw:AcrylicWindow.NoiseOpacity="0.01"
+        FontSize="15" Height="600" MinHeight="600" Width="400" WindowStyle="None" AllowsTransparency="True" Background="Transparent" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+    <Grid>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock Margin="10" HorizontalAlignment="Right" Padding="10" FontSize="30" Text="MySweetyPhone" FontWeight="Bold" FontFamily="Arial Black">
+                <TextBlock.Foreground>
+                    <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                        <GradientStop Color="#d53869" Offset="0"/>
+                        <GradientStop Color="#cbad6d" Offset="1"/>
+                    </LinearGradientBrush>
+                </TextBlock.Foreground>
+
+            </TextBlock>
+            <Border Name="ErrorBorder" Margin="20,10,20,10" Visibility="Collapsed" BorderThickness="3" BorderBrush="WhiteSmoke">
+                <TextBlock Name="Error" Text="Ошибка! Неверное имя или пароль" TextAlignment="Center" Background="#505050" Foreground="White" Padding="10" />
+            </Border>
+            <TextBox Name="Nick" Width="200" Margin="10" materialDesign:HintAssist.Hint="Логин" TextWrapping="Wrap" BorderThickness="4" Padding="2"  Background="#FF6A6A6A"/>
+            <PasswordBox Name="Pass" Width="200" Margin="10" materialDesign:HintAssist.Hint="Пароль" BorderThickness="4"  Padding="2"  Background="#FF6A6A6A"/>
+            <Button Name="LogIn" Content="Войти" Click="RegOrLogin" BorderThickness="0" Margin="10,15,10,10" Padding="5" d:LayoutOverrides="Height" Background="#FFB6B6B6" Style="{DynamicResource SquareButton}" Width="153"/>
+            <Button Name="Reg" Content="Зарегистрироваться" Click="RegOrLogin" BorderThickness="0" Margin="10,15,10,10"  Padding="5" Background="#FFB6B6B6" Style="{DynamicResource SquareButton}" Width="153"/>
+            <Button Name="Offline" Content="Offline режим" Click="RegOrLogin" BorderThickness="0" Margin="10,15,10,10" Padding="5" d:LayoutOverrides="Height" Background="#FFB6B6B6" Style="{DynamicResource SquareButton}" Width="153"   />
+        </StackPanel>
+    </Grid>
+</Window>
