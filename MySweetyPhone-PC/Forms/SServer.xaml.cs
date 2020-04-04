@@ -16,13 +16,18 @@ using System.Windows.Shapes;
 namespace MySweetyPhone_PC.Forms
 {
     /// <summary>
-    /// Логика взаимодействия для Saved.xaml
+    /// Логика взаимодействия для SServer.xaml
     /// </summary>
-    public partial class Saved : Page
+    public partial class SServer : Page, IDisposable
     {
-        public Saved()
+        public SServer()
         {
             InitializeComponent();
+        }
+
+        public void Dispose()
+        {
+
         }
     }
 }

@@ -17,9 +17,7 @@ namespace MySweetyPhone_PC
     public partial class App : Application
     {
         public static String name;
-        public static String login;
-        public static long id;
-        public static long regdate;
+        public static long code;
         public static IniManager ini;
 
         class Respond
@@ -37,16 +35,10 @@ namespace MySweetyPhone_PC
             ini.WritePrivateString("Main", "id", "1585775063");
             */
             name = ini.GetPrivateString("Main", "name", "");
-            login = ini.GetPrivateString("Main", "login", "");
-            regdate = long.Parse(ini.GetPrivateString("Main", "regdate", "0"));
-            id = long.Parse(ini.GetPrivateString("Main", "id", "0"));
-            String result2 = Request.Get("http://mysweetyphone.herokuapp.com/?Type=Check&DeviceType=PC&RegDate=" + regdate + "&Login=" + WebUtility.UrlEncode(login) + "&Id=" + id + "&Name=" + WebUtility.UrlEncode(name));
-            Respond respond = JsonConvert.DeserializeObject<Respond>(result2);
-            if ((respond.code == 0 && respond.result == 1) || (App.login == "" && App.name != "" ))
+            code = long.Parse(ini.GetPrivateString("Main", "code", "0"));
+            if (App.name != "" )
                 this.StartupUri = new Uri("Forms/Main.xaml", UriKind.Relative);
-            else if(respond.code == 1 || respond.code == 3)
-                this.StartupUri = new Uri("Forms/Login.xaml", UriKind.Relative);
-            else if(respond.result == 2)
+            else
                 this.StartupUri = new Uri("Forms/RegDevice.xaml", UriKind.Relative);
         }
     }

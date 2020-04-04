@@ -55,42 +55,14 @@ namespace MySweetyPhone_PC.Forms
                 ErrorBorder.Visibility = Visibility.Visible;
                 return;
             }
-            if(App.login == "")
-            {
-                App.name = DeviceName.Text;
-                App.regdate = System.DateTime.Now.Second;
-                App.ini.WritePrivateString("Main", "name", DeviceName.Text);
-                App.ini.WritePrivateString("Main", "regdate", App.regdate.ToString());
-                Main main = new Main();
-                main.Show();
-                this.Close();
-                return;
-            }
-            Next.IsEnabled = DeviceName.IsEnabled = false;
-            String result2 = Request.Get("http://mysweetyphone.herokuapp.com/?Type=AddDevice&DeviceType=PC&Id=" + App.id + "&Login=" + WebUtility.UrlEncode(App.login) + "&Name=" + WebUtility.UrlEncode(DeviceName.Text));
-            Respond respond = JsonConvert.DeserializeObject<Respond>(result2);
-            switch (respond.code)
-            {
-                case 0:
-                    App.ini.WritePrivateString("Main", "name", DeviceName.Text);
-                    App.ini.WritePrivateString("Main", "regdate", respond.regdate.ToString());
-                    App.name = DeviceName.Text;
-                    App.regdate = respond.regdate;
-                    Main main = new Main();
-                    main.Show();
-                    this.Close();
-                    break;
-                case 1:
-                    Error.Text = "Это имя устройства уже используется!";
-                    ErrorBorder.Visibility = Visibility.Visible;
-                    Next.IsEnabled = DeviceName.IsEnabled = true;
-                    break;
-                case 3:
-                    Error.Text = "Не удалось получить доступ к серверу";
-                    ErrorBorder.Visibility = Visibility.Visible;
-                    Next.IsEnabled = DeviceName.IsEnabled = true;
-                    break;
-            }
+            App.name = DeviceName.Text;
+            App.code = new Random().Next(1000000);
+            App.ini.WritePrivateString("Main", "name", DeviceName.Text);
+            App.ini.WritePrivateString("Main", "code", App.code.ToString());
+            Main main = new Main();
+            main.Show();
+            this.Close();
+            return;
         }
     }
 }

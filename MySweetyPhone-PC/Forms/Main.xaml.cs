@@ -25,27 +25,14 @@ namespace MySweetyPhone_PC.Forms
         public Main()
         {
             InitializeComponent();
-            LoginNav.Text = App.login;
-            if (App.login == "")
-            {
-                DevicesListNav.Visibility = SavedNav.Visibility = Visibility.Collapsed;
-                SClientNav.IsSelected = true;
-            }
-            else
-                DevicesListNav.IsSelected = true;
+            NameNav.Text = App.name;
+            SClientNav.IsSelected = true;
         }
 
         private void Selected(object sender, RoutedEventArgs e)
         {
-            if (sender == DevicesListNav)
-            {
-                Content.Content = new DevicesList();
-            }
-            else if(sender == SavedNav)
-            {
-                Content.Content = new Saved();
-            }
-            else if (sender == SClientNav)
+            if (Content.Content != null) ((IDisposable)Content.Content).Dispose();
+            if (sender == SClientNav)
             {
                 Content.Content = new SClient();
             }
@@ -55,14 +42,8 @@ namespace MySweetyPhone_PC.Forms
             }
         }
 
-        private void Refresh(object sender, RoutedEventArgs e)
-        {
-            Selected(Menu.SelectedItem, null);
-        }
-
         private void Exit(object sender, RoutedEventArgs e)
         {
-            Request.Get("http://mysweetyphone.herokuapp.com/?Type=RemoveDevice&RegDate=" + App.regdate + "&Login=" + WebUtility.UrlEncode(App.login) + "&MyName=" + WebUtility.UrlEncode(App.name) + "&Id=" + App.id + "&Name=" + App.name);
             if (File.Exists(@"./Properties.ini"))
             {
                 File.Delete(@"./Properties.ini");

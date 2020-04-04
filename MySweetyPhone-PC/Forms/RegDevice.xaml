@@ -24,7 +24,7 @@
             <Border Name="ErrorBorder" Margin="20,10,20,10" Visibility="Collapsed" BorderThickness="3" BorderBrush="WhiteSmoke">
                 <TextBlock Name="Error" Text="Ошибка! Неверное имя или пароль" TextAlignment="Center" Background="#505050" Foreground="White" Padding="10" />
             </Border>
-            <TextBox Name="DeviceName" Width="200" Margin="10,30,10,10" materialDesign:HintAssist.Hint="Имя устройство" TextWrapping="Wrap" BorderThickness="4" Padding="2"  Background="#FF6A6A6A"/>
+            <TextBox Name="DeviceName" Width="200" Margin="10,30,10,10" materialDesign:HintAssist.Hint="Имя устройство" TextWrapping="NoWrap" BorderThickness="4" Padding="2"  Background="#FF6A6A6A"/>
             <Button Name="Next" Content="Далее" Click="Reg" BorderThickness="0" Margin="10,15,10,10" Padding="5" d:LayoutOverrides="Height" Background="#FFB6B6B6" Style="{DynamicResource SquareButton}" Width="153"/>
         </StackPanel>
     </Grid>

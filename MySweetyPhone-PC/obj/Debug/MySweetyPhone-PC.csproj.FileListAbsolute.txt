@@ -21,13 +21,11 @@ C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\De
 C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\MySweetyPhone-PC.csproj.CopyComplete
 C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\Main.g.cs
 C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\Main.baml
-C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\DevicesList.g.cs
-C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\Saved.g.cs
-C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\DevicesList.baml
-C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\Saved.baml
 C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\bin\Debug\Newtonsoft.Json.dll
 C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\bin\Debug\Newtonsoft.Json.xml
-C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\Login.g.cs
-C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\Login.baml
 C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\RegDevice.g.cs
 C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\RegDevice.baml
+C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\SClient.g.cs
+C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\SServer.g.cs
+C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\SClient.baml
+C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\SServer.baml

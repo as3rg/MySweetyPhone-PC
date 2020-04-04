@@ -31,24 +31,9 @@
                     <Button Background="{x:Null}" BorderBrush="{x:Null}"  Click="Exit">
                         <materialDesign:PackIcon Kind="ExitToApp" Height="20" Width="20"/>
                     </Button>
-                    <Button Background="{x:Null}" BorderBrush="{x:Null}" Click="Refresh">
-                        <materialDesign:PackIcon Kind="Refresh" Height="20" Width="20"/>
-                    </Button>
-                    <TextBlock Name="LoginNav" HorizontalAlignment="Stretch" Margin="15, 15,15,15" Text="Меню" FontWeight="DemiBold"></TextBlock>
+                    <TextBlock Name="NameNav" HorizontalAlignment="Stretch" Margin="15, 15,15,15" Text="Меню" FontWeight="DemiBold"></TextBlock>
                 </StackPanel>
                 <ListView Foreground="White" Name="Menu">
-                    <ListViewItem Padding="1" Selected="Selected" Name="DevicesListNav">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Devices" Margin="15"/>
-                            <TextBlock Text="Устройства" VerticalAlignment="Center" FontSize="16"/>
-                        </StackPanel>
-                    </ListViewItem>
-                    <ListViewItem Padding="1" Selected="Selected" Name="SavedNav" AutomationProperties.Name="SavedNav">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Send" Margin="15"/>
-                            <TextBlock Text="Избранное" VerticalAlignment="Center" FontSize="16"/>
-                        </StackPanel>
-                    </ListViewItem>
                     <ListViewItem Padding="1" Selected="Selected" Name="SClientNav">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Leak" Margin="15"/>

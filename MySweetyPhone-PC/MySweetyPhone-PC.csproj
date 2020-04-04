@@ -88,24 +88,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Forms\Login.xaml.cs">
-      <DependentUpon>Login.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Forms\RegDevice.xaml.cs">
       <DependentUpon>RegDevice.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Forms\SClient.cs" />
-    <Compile Include="Forms\SServer.cs" />
+    <Compile Include="Forms\SClient.xaml.cs">
+      <DependentUpon>SClient.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\SServer.xaml.cs">
+      <DependentUpon>SServer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Tools\IniManager.cs" />
-    <Compile Include="Tools\Request.cs" />
-    <Page Include="Forms\DevicesList.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Forms\Login.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
+    <Compile Include="Tools\Session.cs" />
+    <Compile Include="Tools\SessionClient.cs" />
     <Page Include="Forms\Main.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -114,9 +108,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Forms\DevicesList.xaml.cs">
-      <DependentUpon>DevicesList.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Forms\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
@@ -124,15 +115,16 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Forms\Saved.xaml">
+    <Page Include="Forms\SClient.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\SServer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\Saved.xaml.cs">
-      <DependentUpon>Saved.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
