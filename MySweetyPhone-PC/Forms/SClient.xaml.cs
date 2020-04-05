@@ -35,6 +35,7 @@ namespace MySweetyPhone_PC.Forms
         {
             if (udpSearching != null) udpSearching.Close();
             if (searching != null && searching.IsAlive) searching.Interrupt();
+            if (searching2 != null && searching2.IsAlive) searching2.Interrupt();
         }
 
         class Server
@@ -46,8 +47,14 @@ namespace MySweetyPhone_PC.Forms
             public int mode;
         }
 
-        Thread searching;
+        Thread searching, searching2;
         UdpClient udpSearching = null;
+
+        class ServerInfo
+        {
+            public int value = 5;
+            public ListViewItem lvi;
+        }
 
         private void StartSearching(object sender, RoutedEventArgs e)
         {
@@ -64,7 +71,7 @@ namespace MySweetyPhone_PC.Forms
                 {
                     try
                     {
-                        HashSet<Tuple<int,String>> ServerSet = new HashSet<Tuple<int, String>>();
+                        Dictionary<Tuple<int,String>, ServerInfo> ServerSet = new Dictionary<Tuple<int, String>, ServerInfo>();
                         udpSearching = new UdpClient(Session.BroadcastingPort);
                         IPEndPoint ip = null;
                         while (true)
@@ -73,9 +80,30 @@ namespace MySweetyPhone_PC.Forms
                             string message = Encoding.UTF8.GetString(data);
                             Server server = JsonConvert.DeserializeObject<Server>(message);
                             Tuple<int, String> serverTuple = new Tuple<int, string>(server.type, server.name);
-                            if (!ServerSet.Contains(serverTuple))
+                            if (!ServerSet.ContainsKey(serverTuple))
                             {
-                                ServerSet.Add(serverTuple);
+                                Thread searching2 = new Thread(() =>
+                                {
+                                    while (true)
+                                    {
+                                        foreach (Tuple<int, string> p in ServerSet.Keys.ToList())
+                                        {
+                                            if (ServerSet[p].value > 0) ServerSet[p].value--;
+                                            Application.Current.Dispatcher.Invoke(new Action(() =>
+                                            {
+                                                if (ServerSet[p].value <= 0)
+                                                {
+                                                    ServerSet[p].lvi.Visibility = Visibility.Collapsed;
+                                                }
+                                                else if (ServerSet[p].lvi != null)
+                                                    ServerSet[p].lvi.Visibility = Visibility.Visible;
+                                            }));
+                                        }
+                                        Thread.Sleep(2000);
+                                    }
+                                });
+                                searching2.Start();
+                                ServerInfo si = new ServerInfo();
                                 Application.Current.Dispatcher.Invoke(new Action(() =>
                                 {
                                     StackPanel sp = new StackPanel();
@@ -95,15 +123,22 @@ namespace MySweetyPhone_PC.Forms
                                     ListViewItem lvi = new ListViewItem();
                                     lvi.Content = sp;
                                     Devices.Items.Add(lvi);
+                                    si.lvi = lvi;
                                     lvi.Selected += delegate
                                     {
                                         searching.Interrupt();
+                                        searching2.Interrupt();
                                         udpSearching.Close();
                                         SearchBtn.Content = "Поиск...";
                                         lvi.Visibility = Visibility.Collapsed;
                                         SessionClient sessionClient = new SessionClient(ip.Address, server.port, server.type, server.mode);
                                     };
                                 }));
+                                ServerSet.Add(serverTuple, si);
+                            }
+                            else
+                            {
+                                ServerSet[serverTuple].value = 5;
                             }
                         }
                     }

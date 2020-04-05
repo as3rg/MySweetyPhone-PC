@@ -56,7 +56,7 @@ namespace MySweetyPhone_PC.Forms
                 return;
             }
             App.name = DeviceName.Text;
-            App.code = new Random().Next(1000000);
+            App.code = new DateTime().Millisecond % 1000000;
             App.ini.WritePrivateString("Main", "name", DeviceName.Text);
             App.ini.WritePrivateString("Main", "code", App.code.ToString());
             Main main = new Main();
