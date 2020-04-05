@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace MySweetyPhone_PC.Tools
 {
-    class Session
+    public class Session
     {
         public IPAddress address { get; protected set; }
         public int port { get; protected set; }

@@ -88,6 +88,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Forms\KeysConverter.cs" />
+    <Compile Include="Forms\MouseTracker.xaml.cs">
+      <DependentUpon>MouseTracker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\RegDevice.xaml.cs">
       <DependentUpon>RegDevice.xaml</DependentUpon>
     </Compile>
@@ -111,6 +115,10 @@
     <Compile Include="Forms\Main.xaml.cs">
       <DependentUpon>Main.xaml</DependentUpon>
     </Compile>
+    <Page Include="Forms\MouseTracker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\RegDevice.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

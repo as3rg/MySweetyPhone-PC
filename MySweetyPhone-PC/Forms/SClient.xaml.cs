@@ -100,6 +100,8 @@ namespace MySweetyPhone_PC.Forms
                                         searching.Interrupt();
                                         udpSearching.Close();
                                         SearchBtn.Content = "Поиск...";
+                                        lvi.Visibility = Visibility.Collapsed;
+                                        SessionClient sessionClient = new SessionClient(ip.Address, server.port, server.type, server.mode);
                                     };
                                 }));
                             }

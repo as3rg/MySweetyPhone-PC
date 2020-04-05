@@ -29,3 +29,5 @@ C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\De
 C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\SServer.g.cs
 C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\SClient.baml
 C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\SServer.baml
+C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\MouseTracker.g.cs
+C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\MouseTracker.baml
