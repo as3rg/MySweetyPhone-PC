@@ -31,7 +31,11 @@ namespace MySweetyPhone_PC.Tools
                     }), CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
                     break;
                 case FILEVIEW:
-
+                    Task.Factory.StartNew(new Action(() =>
+                    {
+                        FileViewer fv = new FileViewer(this);
+                        fv.Show();
+                    }), CancellationToken.None, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
                     break;
                 case SMSVIEW:
                     break;

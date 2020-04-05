@@ -84,23 +84,26 @@ namespace MySweetyPhone_PC.Forms
                             {
                                 Thread searching2 = new Thread(() =>
                                 {
-                                    while (true)
+                                    try
                                     {
-                                        foreach (Tuple<int, string> p in ServerSet.Keys.ToList())
+                                        while (true)
                                         {
-                                            if (ServerSet[p].value > 0) ServerSet[p].value--;
-                                            Application.Current.Dispatcher.Invoke(new Action(() =>
+                                            foreach (Tuple<int, string> p in ServerSet.Keys.ToList())
                                             {
-                                                if (ServerSet[p].value <= 0)
+                                                if (ServerSet[p].value > 0) ServerSet[p].value--;
+                                                Application.Current.Dispatcher.Invoke(new Action(() =>
                                                 {
-                                                    ServerSet[p].lvi.Visibility = Visibility.Collapsed;
-                                                }
-                                                else if (ServerSet[p].lvi != null)
-                                                    ServerSet[p].lvi.Visibility = Visibility.Visible;
-                                            }));
+                                                    if (ServerSet[p].value <= 0)
+                                                    {
+                                                        ServerSet[p].lvi.Visibility = Visibility.Collapsed;
+                                                    }
+                                                    else if (ServerSet[p].lvi != null)
+                                                        ServerSet[p].lvi.Visibility = Visibility.Visible;
+                                                }));
+                                            }
+                                            Thread.Sleep(2000);
                                         }
-                                        Thread.Sleep(2000);
-                                    }
+                                    }catch(ThreadInterruptedException _) { }
                                 });
                                 searching2.Start();
                                 ServerInfo si = new ServerInfo();

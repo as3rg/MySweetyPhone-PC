@@ -1,6 +1,7 @@
 ﻿using MySweetyPhone_PC.Tools;
 using Newtonsoft.Json;
 using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -245,7 +246,7 @@ namespace MySweetyPhone_PC.Forms
 
         public void Send(byte[] b)
         {
-            socket.Send(b, b.Length, sc.address.ToString(), sc.port);
+            socket.Send(b, b.Length, new IPEndPoint(sc.address, sc.port));
         }
     }
 }

@@ -88,6 +88,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Forms\FileViewer.xaml.cs">
+      <DependentUpon>FileViewer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\KeysConverter.cs" />
     <Compile Include="Forms\MouseTracker.xaml.cs">
       <DependentUpon>MouseTracker.xaml</DependentUpon>
@@ -104,6 +107,10 @@
     <Compile Include="Tools\IniManager.cs" />
     <Compile Include="Tools\Session.cs" />
     <Compile Include="Tools\SessionClient.cs" />
+    <Page Include="Forms\FileViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\Main.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
