@@ -30,7 +30,7 @@
                 <Button Click="newFolder" Width="auto" Height="auto" Margin="15" Foreground="White">
                     <materialDesign:PackIcon Kind="FolderAdd" Height="20" Width="20"/>
                 </Button>
-                <TextBlock Name="Path" Height="auto" Foreground="White"></TextBlock>
+                <TextBlock Name="Path" Height="auto" Foreground="White" VerticalAlignment="Center" Margin="15" ></TextBlock>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1">

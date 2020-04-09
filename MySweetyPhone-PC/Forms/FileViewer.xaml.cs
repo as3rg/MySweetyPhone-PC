@@ -2,6 +2,8 @@
 using MySweetyPhone_PC.Tools;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -25,6 +27,18 @@ namespace MySweetyPhone_PC.Forms
             public long Code;
         }
 
+        class ShowDir
+        {
+            public string Type, Name, Dir, DirName;
+            public long Code;
+        }
+
+        class Back
+        {
+            public string Type, Name, Dir;
+            public long Code;
+        }
+
         class Respond
         {
             public class File
@@ -37,6 +51,8 @@ namespace MySweetyPhone_PC.Forms
         }
 
         SessionClient sc;
+        StreamWriter writer;
+        StreamReader reader;
         public FileViewer(SessionClient sc)
         {
             this.sc = sc;
@@ -44,21 +60,44 @@ namespace MySweetyPhone_PC.Forms
 
             Thread receiving = new Thread(() =>
             {
+                Thread.Sleep(2000);
                 TcpClient tcp = new TcpClient(sc.address.ToString(), sc.port);
-                StreamReader reader = new StreamReader(tcp.GetStream());
-                StreamWriter writer = new StreamWriter(tcp.GetStream());
+                reader = new StreamReader(tcp.GetStream());
+                writer = new StreamWriter(tcp.GetStream());
                 Start st = new Start();
                 st.Type = "start";
                 st.Name = App.name;
                 if (sc.mode != 0) st.Code = App.code % sc.mode;
-                writer.WriteLine(JsonConvert.SerializeObject(st));
-                writer.Flush();
-
+                Thread starting = new Thread(() =>
+                {
+                    try
+                    {
+                        while (true)
+                        {
+                            writer.WriteLine(JsonConvert.SerializeObject(st));
+                            writer.Flush();
+                            Thread.Sleep(2000);
+                        }
+                    }catch(ThreadInterruptedException _) {}
+                });
+                starting.Start();
+                NetworkStream ns = tcp.GetStream();
                 while (true)
                 {
-                    String line = reader.ReadLine();
-                    Console.WriteLine(line);
-                    Respond msg = JsonConvert.DeserializeObject<Respond>(line);
+                    List<byte> bytes = new List<byte>();
+                    string chr;
+                    do
+                    {
+                        byte[] b = new byte[1];
+                        ns.Read(b, 0, b.Length);
+                        bytes.Add(b[0]);
+                        chr = Encoding.UTF8.GetString(b);
+                    } while (chr != "\n");
+
+                    //String line = reader.ReadToEnd();
+                    starting.Interrupt();
+                    Console.WriteLine(1);
+                    Respond msg = JsonConvert.DeserializeObject<Respond>(Encoding.UTF8.GetString(bytes.ToArray()));
                     //JSONObject msg = (JSONObject)JSONValue.parse(line);
                     switch (msg.Type)
                     {
@@ -75,6 +114,10 @@ namespace MySweetyPhone_PC.Forms
                             Application.Current.Dispatcher.Invoke(new Action(() =>
                             {
                                 FilesList.Items.Clear();
+                                Path.Text = msg.Dir;
+                                if (msg.State == 1) {
+                                    MessageBox.Show("Нет доступа");    
+                                }
                                 foreach (Respond.File f in msg.Inside)
                                 {
                                     StackPanel sp = new StackPanel();
@@ -97,7 +140,18 @@ namespace MySweetyPhone_PC.Forms
                                     
                                     lvi.Selected += delegate
                                     {
-                                        
+                                        if (f.Type == "Folder") {
+                                            ShowDir sd = new ShowDir();
+                                            sd.Type = "start";
+                                            sd.Name = App.name;
+                                            sd.Dir = msg.Dir;
+                                            sd.DirName = f.Name;
+                                            if (sc.mode != 0) sd.Code = App.code % sc.mode;
+                                            writer.WriteLine(JsonConvert.SerializeObject(sd));
+                                            writer.Flush();
+                                        }else {
+                                                                                                                                            //TODO доделать скачку
+                                        }
                                     };
                                 }
                             /*JSONArray values = (JSONArray)msg.get("Inside");
@@ -133,15 +187,13 @@ namespace MySweetyPhone_PC.Forms
 
         public void back(object sender, RoutedEventArgs e)
         {
-            /*
-            JSONObject msg2 = new JSONObject();
-            msg2.put("Type", "back");
-            msg2.put("Name", name);
-            if (!login.isEmpty()) msg2.put("Login", login);
-            msg2.put("Dir", Path.getText());
-            writer.println(msg2.toJSONString());
-            writer.flush();
-            */
+            Back sd = new Back();
+            sd.Type = "back";
+            sd.Name = App.name;
+            sd.Dir = Path.Text;
+            if (sc.mode != 0) sd.Code = App.code % sc.mode;
+            writer.WriteLine(JsonConvert.SerializeObject(sd));
+            writer.Flush();
         }
 
         public void newFolder(object sender, RoutedEventArgs e)
