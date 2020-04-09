@@ -19,22 +19,22 @@
         <Grid>
             <StackPanel Orientation="Horizontal">
                 <Button Click="back" Width="auto" Height="auto" Margin="15" Foreground="White">
-                    <materialDesign:PackIcon Kind="ArrowLeft" Height="40" Width="40"/>
+                    <materialDesign:PackIcon Kind="ArrowLeft" Height="20" Width="20"/>
                 </Button>
                 <Button Click="reloadFolder" Width="auto" Height="auto" Margin="15" Foreground="White">
-                    <materialDesign:PackIcon Kind="Reload" Height="40" Width="40"/>
+                    <materialDesign:PackIcon Kind="Reload" Height="20" Width="20"/>
                 </Button>
                 <Button Click="uploadFile" Width="auto" Height="auto" Margin="15" Foreground="White">
-                    <materialDesign:PackIcon Kind="Upload" Height="40" Width="40"/>
+                    <materialDesign:PackIcon Kind="Upload" Height="20" Width="20"/>
                 </Button>
                 <Button Click="newFolder" Width="auto" Height="auto" Margin="15" Foreground="White">
-                    <materialDesign:PackIcon Kind="FolderAdd" Height="40" Width="40"/>
+                    <materialDesign:PackIcon Kind="FolderAdd" Height="20" Width="20"/>
                 </Button>
                 <TextBlock Name="Path" Height="auto" Foreground="White"></TextBlock>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1">
-            <ListView HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></ListView>
+            <ListView Name="FilesList" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"></ListView>
         </Grid>
     </Grid>
 </Window>

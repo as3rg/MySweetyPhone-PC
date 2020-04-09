@@ -246,7 +246,7 @@ namespace MySweetyPhone_PC.Forms
 
         public void Send(byte[] b)
         {
-            socket.Send(b, b.Length, new IPEndPoint(sc.address, sc.port));
+            socket.Send(b, b.Length, sc.address.ToString(), sc.port);
         }
     }
 }

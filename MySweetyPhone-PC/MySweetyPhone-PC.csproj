@@ -91,7 +91,6 @@
     <Compile Include="Forms\FileViewer.xaml.cs">
       <DependentUpon>FileViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Forms\KeysConverter.cs" />
     <Compile Include="Forms\MouseTracker.xaml.cs">
       <DependentUpon>MouseTracker.xaml</DependentUpon>
     </Compile>

@@ -1,4 +1,5 @@
-﻿using MySweetyPhone_PC.Tools;
+﻿using MaterialDesignThemes.Wpf;
+using MySweetyPhone_PC.Tools;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -7,6 +8,8 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace MySweetyPhone_PC.Forms
@@ -22,6 +25,17 @@ namespace MySweetyPhone_PC.Forms
             public long Code;
         }
 
+        class Respond
+        {
+            public class File
+            {
+                public String Name, Type;
+            }
+            public String Dir, Type;
+            public int State;
+            public File[] Inside;
+        }
+
         SessionClient sc;
         public FileViewer(SessionClient sc)
         {
@@ -30,22 +44,23 @@ namespace MySweetyPhone_PC.Forms
 
             Thread receiving = new Thread(() =>
             {
-                TcpClient tcp = new TcpClient(new IPEndPoint(sc.address, sc.port));
-                tcp.Connect(new IPEndPoint(sc.address, sc.port));
+                TcpClient tcp = new TcpClient(sc.address.ToString(), sc.port);
                 StreamReader reader = new StreamReader(tcp.GetStream());
                 StreamWriter writer = new StreamWriter(tcp.GetStream());
-                Thread.Sleep(2000);
                 Start st = new Start();
                 st.Type = "start";
                 st.Name = App.name;
                 if (sc.mode != 0) st.Code = App.code % sc.mode;
                 writer.WriteLine(JsonConvert.SerializeObject(st));
+                writer.Flush();
 
-                /*while (true)
+                while (true)
                 {
-                    //String line = reader.readLine();
+                    String line = reader.ReadLine();
+                    Console.WriteLine(line);
+                    Respond msg = JsonConvert.DeserializeObject<Respond>(line);
                     //JSONObject msg = (JSONObject)JSONValue.parse(line);
-                    switch ((String)msg.get("Type"))
+                    switch (msg.Type)
                     {
                         case "finish":
                             this.Close();
@@ -57,6 +72,34 @@ namespace MySweetyPhone_PC.Forms
                             //else reloadFolder(null);
                             break;
                         case "showDir":
+                            Application.Current.Dispatcher.Invoke(new Action(() =>
+                            {
+                                FilesList.Items.Clear();
+                                foreach (Respond.File f in msg.Inside)
+                                {
+                                    StackPanel sp = new StackPanel();
+                                    sp.Margin = new Thickness(10);
+                                    sp.Orientation = Orientation.Horizontal;
+                                    PackIcon pi = new PackIcon();
+                                    pi.Foreground = new SolidColorBrush(Colors.White);
+                                    pi.Kind = f.Type == "File" ? PackIconKind.File : PackIconKind.Folder;
+                                    pi.Height = pi.Width = 20;
+                                    TextBlock tb = new TextBlock();
+                                    tb.Text = f.Name;
+                                    tb.Foreground = new SolidColorBrush(Colors.White);
+                                    tb.FontSize = 15;
+                                    tb.Padding = new Thickness(10, 0, 0, 0);
+                                    sp.Children.Add(pi);
+                                    sp.Children.Add(tb);
+                                    ListViewItem lvi = new ListViewItem();
+                                    lvi.Content = sp;
+                                    FilesList.Items.Add(lvi);
+                                    
+                                    lvi.Selected += delegate
+                                    {
+                                        
+                                    };
+                                }
                             /*JSONArray values = (JSONArray)msg.get("Inside");
                             files.clear();
                             Platform.runLater(()-> {
@@ -76,13 +119,14 @@ namespace MySweetyPhone_PC.Forms
                                     JSONObject folder = (JSONObject)values.get(i);
                                     Draw((String)folder.get("Name"), folder.get("Type").equals("Folder"), (String)msg.get("Dir"));
                                 }
-                            });
+                            });*/
+                            }));
                             break;
                         case "newDirAnswer":
                             //Platform.runLater(()->Draw((String)msg.get("DirName"), true, (String)msg.get("Dir")));
                             break;
                     }
-                }*/
+                }
             });
             receiving.Start();
         }
@@ -201,22 +245,22 @@ namespace MySweetyPhone_PC.Forms
         msg3.put("Dir", Path.getText());
         writer.println(msg3.toJSONString());
         writer.flush();
-    }).start();*/
+        }).start();*/
         }
 
         public void Draw(String fileName, bool isFolder, String dir)
         {
             /*
-    Label folder = new Label(fileName);
-    files.add(fileName);
-    folder.setPadding(new Insets(20, 20, 20, 20));
-    folder.setFont(new Font(14));
-    Folders.getChildren().add(folder);
+        Label folder = new Label(fileName);
+        files.add(fileName);
+        folder.setPadding(new Insets(20, 20, 20, 20));
+        folder.setFont(new Font(14));
+        Folders.getChildren().add(folder);
 
-    final ContextMenu contextMenu = new ContextMenu();
-    javafx.scene.control.MenuItem delete = new javafx.scene.control.MenuItem("Удалить");
-    contextMenu.getItems().addAll(delete);
-    delete.setOnAction(event -> {
+        final ContextMenu contextMenu = new ContextMenu();
+        javafx.scene.control.MenuItem delete = new javafx.scene.control.MenuItem("Удалить");
+        contextMenu.getItems().addAll(delete);
+        delete.setOnAction(event -> {
         new Thread(()-> {
                 JSONObject msg2 = new JSONObject();
         msg2.put("Type", "deleteFile");
@@ -226,8 +270,8 @@ namespace MySweetyPhone_PC.Forms
         msg2.put("Dir", dir);
         writer.println(msg2.toJSONString());
         writer.flush();
-    }).start();
-    
+        }).start();
+
         });
 
         if(isFolder) {
@@ -243,19 +287,19 @@ namespace MySweetyPhone_PC.Forms
             writer.println(msg3.toJSONString());
             writer.flush();
         }).start();
-    });
+        });
         }else {
             folder.setText("📄 "+folder.getText());
             javafx.scene.control.MenuItem save = new javafx.scene.control.MenuItem("Сохранить как");
-contextMenu.getItems().addAll(save);
-save.setOnAction(v -> {
+        contextMenu.getItems().addAll(save);
+        save.setOnAction(v -> {
                 DirectoryChooser fc = new DirectoryChooser();
-fc.setTitle("Выберите папку для сохранения");
+        fc.setTitle("Выберите папку для сохранения");
                 final File out = fc.showDialog(null);
                 if (out == null) return;
                 new Thread(() -> {
-    try
-    {
+        try
+        {
         File out3 = new File(out, "MySweetyPhone");
         out3.mkdirs();
         File out2 = new File(out3, fileName);
@@ -277,16 +321,16 @@ fc.setTitle("Выберите папку для сохранения");
         fileout.close();
         socket.close();
         Platform.runLater(()->Main.trayIcon.displayMessage("Загрузка завершена", "Файл \"" + out2.getName() + "\" загружен", TrayIcon.MessageType.INFO));
-    }
-    catch (IOException e)
-    {
+        }
+        catch (IOException e)
+        {
         e.printStackTrace();
-    }
-}).start();
+        }
+        }).start();
             });
         }
         folder.setOnContextMenuRequested((EventHandler<Event>) event -> contextMenu.show(folder, MouseInfo.getPointerInfo().getLocation().x, MouseInfo.getPointerInfo().getLocation().y));
-*/
+        */
         }
     }
 }
