@@ -68,3 +68,7 @@ C:\Users\spyte\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Deb
 C:\Users\spyte\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\MySweetyPhone-PC.csproj.CopyComplete
 C:\Users\spyte\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\MySweetyPhone-PC.exe
 C:\Users\spyte\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\MySweetyPhone-PC.pdb
+C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\InputDialog.g.cs
+C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\InputDialog.baml
+C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\InfoDialog.g.cs
+C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\InfoDialog.baml

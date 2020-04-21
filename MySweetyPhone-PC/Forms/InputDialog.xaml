@@ -1,0 +1,23 @@
+﻿<Window x:Class="MySweetyPhone_PC.Forms.InputDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MySweetyPhone_PC.Forms"
+        mc:Ignorable="d"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:fw="clr-namespace:SourceChord.FluentWPF;assembly=FluentWPF" 
+        fw:AcrylicWindow.Enabled="True" 
+        fw:AcrylicWindow.NoiseOpacity="0.01"
+        Title="InputDialog" Topmost="True" SizeToContent="WidthAndHeight" WindowStyle="None" AllowsTransparency="True" Background="Transparent" WindowStartupLocation="CenterScreen">
+    <Grid Height="auto" Width="auto" Margin="0">
+        <StackPanel Margin="20">
+            <TextBlock Name="Hint" Margin="10" Text="Тест"></TextBlock>
+            <Border Name="ErrorBorder" Margin="20,10,20,10" Visibility="Collapsed" BorderThickness="3" BorderBrush="WhiteSmoke">
+                <TextBlock MaxWidth="300" TextWrapping="Wrap" Name="Error" Text="Введено пустое имя!" TextAlignment="Center" Background="#505050" Foreground="White" Padding="10" />
+            </Border>
+            <TextBox Name="Result" Width="200" Margin="10,10,10,10" materialDesign:HintAssist.Hint="Текст" TextWrapping="NoWrap" BorderThickness="4" Padding="2"  Background="#FF6A6A6A" />
+            <Button Click="Done" Name="Ok" BorderThickness="0" Margin="10,15,10,10" Padding="5" d:LayoutOverrides="Height" Background="#FFB6B6B6" Style="{DynamicResource SquareButton}" >Ok</Button>
+        </StackPanel>
+    </Grid>
+</Window>

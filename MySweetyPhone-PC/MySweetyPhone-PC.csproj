@@ -91,6 +91,12 @@
     <Compile Include="Forms\FileViewer.xaml.cs">
       <DependentUpon>FileViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\InfoDialog.xaml.cs">
+      <DependentUpon>InfoDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\InputDialog.xaml.cs">
+      <DependentUpon>InputDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MouseTracker.xaml.cs">
       <DependentUpon>MouseTracker.xaml</DependentUpon>
     </Compile>
@@ -107,6 +113,14 @@
     <Compile Include="Tools\Session.cs" />
     <Compile Include="Tools\SessionClient.cs" />
     <Page Include="Forms\FileViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\InfoDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Forms\InputDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

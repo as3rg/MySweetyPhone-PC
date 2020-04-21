@@ -45,7 +45,7 @@ namespace MySweetyPhone_PC.Forms
             {
                 public String Name, Type;
             }
-            public String Dir, Type;
+            public String Dir, DirName, Type;
             public int State;
             public File[] Inside;
         }
@@ -57,6 +57,15 @@ namespace MySweetyPhone_PC.Forms
         {
             this.sc = sc;
             InitializeComponent();
+            this.Closing += delegate
+            {
+                Start st = new Start();
+                st.Type = "finish";
+                st.Name = App.name;
+                if (sc.mode != 0) st.Code = App.code % sc.mode;
+                writer.WriteLine(JsonConvert.SerializeObject(st));
+                writer.Flush();
+            };
 
             Thread receiving = new Thread(() =>
             {
@@ -94,91 +103,52 @@ namespace MySweetyPhone_PC.Forms
                         chr = Encoding.UTF8.GetString(b);
                     } while (chr != "\n");
 
-                    //String line = reader.ReadToEnd();
                     starting.Interrupt();
                     Console.WriteLine(1);
                     Respond msg = JsonConvert.DeserializeObject<Respond>(Encoding.UTF8.GetString(bytes.ToArray()));
-                    //JSONObject msg = (JSONObject)JSONValue.parse(line);
                     switch (msg.Type)
                     {
                         case "finish":
                             this.Close();
-
-                            break;
+                            tcp.Close();
+                            return;
                         case "deleteFile":
-                            //if (((Long)msg.get("State")).intValue() == 1)
-                            //    Platform.runLater(()->Main.trayIcon.displayMessage("Ошибка", "Нет доступа", TrayIcon.MessageType.INFO));
-                            //else reloadFolder(null);
+                            if (msg.State == 1)
+                            {
+                                InfoDialog id = new InfoDialog("Ошибка", "Нет доступа");
+                                id.ShowDialog();
+                            }
+                            else
+                            {
+                                reloadFolder(null, null);
+                            }
                             break;
                         case "showDir":
                             Application.Current.Dispatcher.Invoke(new Action(() =>
                             {
-                                FilesList.Items.Clear();
-                                Path.Text = msg.Dir;
-                                if (msg.State == 1) {
-                                    MessageBox.Show("Нет доступа");    
-                                }
-                                foreach (Respond.File f in msg.Inside)
+
+                                if (msg.State == 1)
                                 {
-                                    StackPanel sp = new StackPanel();
-                                    sp.Margin = new Thickness(10);
-                                    sp.Orientation = Orientation.Horizontal;
-                                    PackIcon pi = new PackIcon();
-                                    pi.Foreground = new SolidColorBrush(Colors.White);
-                                    pi.Kind = f.Type == "File" ? PackIconKind.File : PackIconKind.Folder;
-                                    pi.Height = pi.Width = 20;
-                                    TextBlock tb = new TextBlock();
-                                    tb.Text = f.Name;
-                                    tb.Foreground = new SolidColorBrush(Colors.White);
-                                    tb.FontSize = 15;
-                                    tb.Padding = new Thickness(10, 0, 0, 0);
-                                    sp.Children.Add(pi);
-                                    sp.Children.Add(tb);
-                                    ListViewItem lvi = new ListViewItem();
-                                    lvi.Content = sp;
-                                    FilesList.Items.Add(lvi);
-                                    
-                                    lvi.Selected += delegate
+                                    InfoDialog id = new InfoDialog("Ошибка", "Нет доступа");
+                                    id.ShowDialog();
+                                }
+                                else
+                                {
+                                    FilesList.Items.Clear();
+                                    Path.Text = msg.Dir;
+                                    foreach (Respond.File f in msg.Inside)
                                     {
-                                        if (f.Type == "Folder") {
-                                            ShowDir sd = new ShowDir();
-                                            sd.Type = "start";
-                                            sd.Name = App.name;
-                                            sd.Dir = msg.Dir;
-                                            sd.DirName = f.Name;
-                                            if (sc.mode != 0) sd.Code = App.code % sc.mode;
-                                            writer.WriteLine(JsonConvert.SerializeObject(sd));
-                                            writer.Flush();
-                                        }else {
-                                                                                                                                            //TODO доделать скачку
-                                        }
-                                    };
+                                        Draw(f.Name, f.Type == "Folder", msg.Dir);
+                                    }
                                 }
-                            /*JSONArray values = (JSONArray)msg.get("Inside");
-                            files.clear();
-                            Platform.runLater(()-> {
-                                if (((Long)msg.get("State")).intValue() == 1)
-                                {
-                                    Main.trayIcon.displayMessage("Ошибка", "Нет доступа", TrayIcon.MessageType.INFO);
-                                    return;
-                                }
-                                Folders.getChildren().clear();
-                                Path.setText((String)msg.get("Dir"));
-                                Back.setVisible(!Path.getText().isEmpty());
-                                NewFolder.setVisible(!Path.getText().isEmpty());
-                                Upload.setVisible(!Path.getText().isEmpty());
-                                Reload.setVisible(!Path.getText().isEmpty());
-                                for (int i = 0; i < values.size(); i++)
-                                {
-                                    JSONObject folder = (JSONObject)values.get(i);
-                                    Draw((String)folder.get("Name"), folder.get("Type").equals("Folder"), (String)msg.get("Dir"));
-                                }
-                            });*/
                             }));
                             break;
                         case "newDirAnswer":
-                            //Platform.runLater(()->Draw((String)msg.get("DirName"), true, (String)msg.get("Dir")));
-                            break;
+                                Application.Current.Dispatcher.Invoke(new Action(() =>
+                                {
+                                    Draw(msg.DirName, true, msg.Dir);
+                                }));
+                                break;
                     }
                 }
             });
@@ -198,52 +168,17 @@ namespace MySweetyPhone_PC.Forms
 
         public void newFolder(object sender, RoutedEventArgs e)
         {
-            /*while (true)
-            {
-                TextInputDialog dialog = new TextInputDialog();
-                dialog.setTitle("Имя папки");
-                dialog.setHeaderText("Введите имя папки");
-                Optional<String> s = dialog.showAndWait();
-                if (s.isPresent() && !s.get().isEmpty())
-                {
-                    if (
-                            s.get().contains("\\")
-                                    || s.get().contains("/")
-                                    || s.get().contains(":")
-                                    || s.get().contains("*")
-                                    || s.get().contains("?")
-                                    || s.get().contains("\"")
-                                    || s.get().contains("<")
-                                    || s.get().contains(">")
-                                    || s.get().contains("|")
-                    )
-                    {
-                        dialog.setContentText("Имя содержит недопустимые символы");
-                    }
-                    else if (files.contains(s.get()))
-                    {
-                        dialog.setContentText("Такая папка уже существует");
-                    }
-                    else if (s.get().isEmpty())
-                    {
-                        dialog.setContentText("Имя файла не может быть пустым");
-                    }
-                    else
-                    {
-                        new Thread(()-> {
-                        JSONObject msg2 = new JSONObject();
-                        msg2.put("Type", "newDir");
-                        msg2.put("DirName", s.get());
-                        msg2.put("Name", name);
-                        if (!login.isEmpty()) msg2.put("Login", login);
-                        msg2.put("Dir", Path.getText());
-                        writer.println(msg2.toString());
-                        writer.flush();
-                    }).start();
-                    break;
-                }
-            }else break;
-        }*/
+            InputDialog id = new InputDialog("Имя папки","Введите имя папки");
+            id.ShowDialog();
+            Console.WriteLine(id.Result.Text);
+            ShowDir sd = new ShowDir();
+            sd.Type = "newDir";
+            sd.Name = App.name;
+            sd.Dir = Path.Text;
+            sd.DirName = id.Result.Text;
+            if (sc.mode != 0) sd.Code = App.code % sc.mode;
+            writer.WriteLine(JsonConvert.SerializeObject(sd));
+            writer.Flush();
         }
 
         public void uploadFile(object sender, RoutedEventArgs e)
@@ -288,20 +223,55 @@ namespace MySweetyPhone_PC.Forms
 
         public void reloadFolder(object sender, RoutedEventArgs e)
         {
-            /*
-        new Thread(()-> {
-            JSONObject msg3 = new JSONObject();
-        msg3.put("Type", "showDir");
-        msg3.put("Name", name);
-        if (!login.isEmpty()) msg3.put("Login", login);
-        msg3.put("Dir", Path.getText());
-        writer.println(msg3.toJSONString());
-        writer.flush();
-        }).start();*/
+            ShowDir sd = new ShowDir();
+            sd.Type = "showDir";
+            sd.Name = App.name;
+            sd.Dir = Path.Text;
+            sd.DirName = "";
+            if (sc.mode != 0) sd.Code = App.code % sc.mode;
+            writer.WriteLine(JsonConvert.SerializeObject(sd));
+            writer.Flush();
         }
 
         public void Draw(String fileName, bool isFolder, String dir)
         {
+
+            StackPanel sp = new StackPanel();
+            sp.Margin = new Thickness(10);
+            sp.Orientation = Orientation.Horizontal;
+            PackIcon pi = new PackIcon();
+            pi.Foreground = new SolidColorBrush(Colors.White);
+            pi.Kind = isFolder ? PackIconKind.Folder : PackIconKind.File;
+            pi.Height = pi.Width = 20;
+            TextBlock tb = new TextBlock();
+            tb.Text = fileName;
+            tb.Foreground = new SolidColorBrush(Colors.White);
+            tb.FontSize = 15;
+            tb.Padding = new Thickness(10, 0, 0, 0);
+            sp.Children.Add(pi);
+            sp.Children.Add(tb);
+            ListViewItem lvi = new ListViewItem();
+            lvi.Content = sp;
+            FilesList.Items.Add(lvi);
+
+            lvi.Selected += delegate
+            {
+                if (isFolder)
+                {
+                    ShowDir sd = new ShowDir();
+                    sd.Type = "start";
+                    sd.Name = App.name;
+                    sd.Dir = dir;
+                    sd.DirName = fileName;
+                    if (sc.mode != 0) sd.Code = App.code % sc.mode;
+                    writer.WriteLine(JsonConvert.SerializeObject(sd));
+                    writer.Flush();
+                }
+                else
+                {
+                    //TODO доделать скачку
+                }
+            };
             /*
         Label folder = new Label(fileName);
         files.add(fileName);
