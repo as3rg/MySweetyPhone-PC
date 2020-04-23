@@ -219,7 +219,7 @@ namespace MySweetyPhone_PC.Forms
 
         public void newFolder(object sender, RoutedEventArgs e)
         {
-            InputDialog id = new InputDialog("Имя папки","Введите имя папки");
+            InputDialog id = new InputDialog("Имя папки", "Введите имя папки", InputDialog.Type.FILENAME);
             id.ShowDialog();
             if (id.GetResult() == null) return;
             ShowDir sd = new ShowDir();
@@ -232,10 +232,6 @@ namespace MySweetyPhone_PC.Forms
             writer.Flush();
         }
 
-        class UploadFile
-        {
-
-        }
         public void uploadFile(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
@@ -332,7 +328,7 @@ namespace MySweetyPhone_PC.Forms
             menu.Items.Add(rename);
             rename.Click += delegate
             {
-                InputDialog id = new InputDialog("Имя файла", "Введите имя файла", fileName);
+                InputDialog id = new InputDialog("Имя файла", "Введите имя файла", InputDialog.Type.FILENAME, fileName);
                 id.ShowDialog();
                 if (id.GetResult() == null) return;
                 Rename rn = new Rename();

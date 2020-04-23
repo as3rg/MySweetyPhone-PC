@@ -50,5 +50,14 @@ namespace MySweetyPhone_PC.Forms
             }
             System.Windows.Application.Current.Shutdown();
         }
+
+        private void NewKey(object sender, RoutedEventArgs e)
+        {
+            InputDialog id = new InputDialog("Новый код", "Введите новый код", InputDialog.Type.CODE, App.code.ToString());
+            id.ShowDialog();
+            if (id.GetResult() == null) return;
+            App.code = int.Parse(id.GetResult());
+            App.ini.WritePrivateString("Main", "code", App.code.ToString());
+        }
     }
 }

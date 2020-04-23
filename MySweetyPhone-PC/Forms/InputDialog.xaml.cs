@@ -21,13 +21,21 @@ namespace MySweetyPhone_PC.Forms
     public partial class InputDialog : Window
     {
         Boolean isDone = false;
+        Type type;
         public String GetResult()
         {
             return isDone ? Result.Text : null;
         }
-        public InputDialog(String Title, String Hint, String Default = "")
+
+        public enum Type
+        {
+            FILENAME,
+            CODE
+        }
+        public InputDialog(String Title, String Hint, Type type, String Default = "")
         {
             InitializeComponent();
+            this.type = type;
             this.Title = Title;
             this.Hint.Text = Hint;
             this.Result.Text = Default;
@@ -39,34 +47,52 @@ namespace MySweetyPhone_PC.Forms
 
         public void Done(object sender, RoutedEventArgs e)
         {
-            if(Result.Text == "")
+            switch (type)
             {
-                ErrorBorder.Visibility = Visibility.Visible;
-                Error.Text = "Введено пустое имя!";
+                case Type.FILENAME:
+                    if (Result.Text == "")
+                    {
+                        ErrorBorder.Visibility = Visibility.Visible;
+                        Error.Text = "Введено пустое имя!";
+                    }
+                    else if (Result.Text[0] == ' ' || Result.Text[Result.Text.Length - 1] == ' ')
+                    {
+                        ErrorBorder.Visibility = Visibility.Visible;
+                        Error.Text = "Имя не может начинаться и заканчиваться пробелом";
+                    }
+                    else if (Result.Text.Contains('\\')
+                        || Result.Text.Contains('/')
+                        || Result.Text.Contains(':')
+                        || Result.Text.Contains('*')
+                        || Result.Text.Contains('?')
+                        || Result.Text.Contains('"')
+                        || Result.Text.Contains('<')
+                        || Result.Text.Contains('>')
+                        || Result.Text.Contains('|'))
+                    {
+                        ErrorBorder.Visibility = Visibility.Visible;
+                        Error.Text = "Введены недопустимые символы";
+                    }
+                    else
+                    {
+                        isDone = true;
+                        Close();
+                    }
+                    break;
+                case Type.CODE:
+                    if (!Regex.IsMatch(Result.Text, @"\d{6}"))
+                    {
+                        ErrorBorder.Visibility = Visibility.Visible;
+                        Error.Text = "Неверный формат кода!";
+                    }
+                    else
+                    {
+                        isDone = true;
+                        Close();
+                    }
+                    break;
             }
-            else if (Result.Text[0] == ' ' || Result.Text[Result.Text.Length-1] == ' ')
-            {
-                ErrorBorder.Visibility = Visibility.Visible;
-                Error.Text = "Имя не может начинаться и заканчиваться пробелом";
-            }
-            else if (Result.Text.Contains('\\')
-                || Result.Text.Contains('/')
-                || Result.Text.Contains(':')
-                || Result.Text.Contains('*')
-                || Result.Text.Contains('?')
-                || Result.Text.Contains('"')
-                || Result.Text.Contains('<')
-                || Result.Text.Contains('>')
-                || Result.Text.Contains('|'))
-            {
-                ErrorBorder.Visibility = Visibility.Visible;
-                Error.Text = "Введены недопустимые символы";
-            }
-            else
-            {
-                isDone = true;
-                Close();
-            }
+      
         }
     }
 }

@@ -31,6 +31,9 @@
                     <Button Background="{x:Null}" BorderBrush="{x:Null}"  Click="Exit">
                         <materialDesign:PackIcon Kind="ExitToApp" Height="20" Width="20"/>
                     </Button>
+                    <Button Background="{x:Null}" BorderBrush="{x:Null}"  Click="NewKey">
+                        <materialDesign:PackIcon Kind="Key" Height="20" Width="20"/>
+                    </Button>
                     <TextBlock Name="NameNav" HorizontalAlignment="Stretch" Margin="15, 15,15,15" Text="Меню" FontWeight="DemiBold"></TextBlock>
                 </StackPanel>
                 <ListView Foreground="White" Name="Menu">
