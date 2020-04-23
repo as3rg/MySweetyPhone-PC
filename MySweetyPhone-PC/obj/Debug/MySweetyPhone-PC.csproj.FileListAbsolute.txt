@@ -72,3 +72,7 @@ C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\De
 C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\InputDialog.baml
 C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\InfoDialog.g.cs
 C:\Users\Xiaomi\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\InfoDialog.baml
+C:\Users\spyte\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\InfoDialog.g.cs
+C:\Users\spyte\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\InputDialog.g.cs
+C:\Users\spyte\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\InfoDialog.baml
+C:\Users\spyte\Documents\MySweetyPhone\MySweetyPhone-PC\MySweetyPhone-PC\obj\Debug\Forms\InputDialog.baml

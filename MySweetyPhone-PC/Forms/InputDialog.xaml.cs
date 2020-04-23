@@ -20,11 +20,17 @@ namespace MySweetyPhone_PC.Forms
     /// </summary>
     public partial class InputDialog : Window
     {
-        public InputDialog(String Title, String Hint)
+        Boolean isDone = false;
+        public String GetResult()
+        {
+            return isDone ? Result.Text : null;
+        }
+        public InputDialog(String Title, String Hint, String Default = "")
         {
             InitializeComponent();
             this.Title = Title;
             this.Hint.Text = Hint;
+            this.Result.Text = Default;
             this.Result.GotFocus += delegate
             {
                 ErrorBorder.Visibility = Visibility.Collapsed;
@@ -58,6 +64,7 @@ namespace MySweetyPhone_PC.Forms
             }
             else
             {
+                isDone = true;
                 Close();
             }
         }

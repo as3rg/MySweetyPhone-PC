@@ -1,4 +1,5 @@
 ﻿using MaterialDesignThemes.Wpf;
+using Microsoft.Win32;
 using MySweetyPhone_PC.Tools;
 using Newtonsoft.Json;
 using System;
@@ -11,6 +12,7 @@ using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -39,8 +41,51 @@ namespace MySweetyPhone_PC.Forms
             public long Code;
         }
 
+        class Download
+        {
+            public string Type, Name, Dir, FileName;
+            public long Code, FileSocketPort;
+        }
+
+        class Delete
+        {
+            public string Type, Name, Dir, FileName;
+            public long Code;
+        }
+
+        class Rename
+        {
+            public string Type, Name, Dir, FileName, NewFileName;
+            public long Code;
+        }
+
+        private string _Dir;
+
+        string Directory {
+            set {
+                Application.Current.Dispatcher.Invoke(new Action(() =>
+                {
+                    Path.Text = value;
+                    _Dir = value;
+                }));
+            }
+
+            get
+            {
+                return _Dir;
+            }
+        }
+
         class Respond
         {
+
+            public class Comparer : IComparer<File>
+            {
+                public int Compare(File x, File y)
+                {
+                    return String.Compare(x.Name, y.Name);
+                }
+            }
             public class File
             {
                 public String Name, Type;
@@ -104,7 +149,6 @@ namespace MySweetyPhone_PC.Forms
                     } while (chr != "\n");
 
                     starting.Interrupt();
-                    Console.WriteLine(1);
                     Respond msg = JsonConvert.DeserializeObject<Respond>(Encoding.UTF8.GetString(bytes.ToArray()));
                     switch (msg.Type)
                     {
@@ -112,15 +156,20 @@ namespace MySweetyPhone_PC.Forms
                             this.Close();
                             tcp.Close();
                             return;
+                        case "renameFile":
                         case "deleteFile":
+                            if (Directory != msg.Dir) break;
                             if (msg.State == 1)
                             {
-                                InfoDialog id = new InfoDialog("Ошибка", "Нет доступа");
-                                id.ShowDialog();
+                                Application.Current.Dispatcher.Invoke(new Action(() =>
+                                {
+                                    InfoDialog id = new InfoDialog("Ошибка", "Нет доступа");
+                                    id.ShowDialog();
+                                }));
                             }
                             else
                             {
-                                reloadFolder(null, null);
+                                Application.Current.Dispatcher.Invoke(new Action(()=>reloadFolder(null, null)));
                             }
                             break;
                         case "showDir":
@@ -135,7 +184,8 @@ namespace MySweetyPhone_PC.Forms
                                 else
                                 {
                                     FilesList.Items.Clear();
-                                    Path.Text = msg.Dir;
+                                    Directory = msg.Dir;
+                                    Array.Sort(msg.Inside, new Respond.Comparer());
                                     foreach (Respond.File f in msg.Inside)
                                     {
                                         Draw(f.Name, f.Type == "Folder", msg.Dir);
@@ -143,12 +193,13 @@ namespace MySweetyPhone_PC.Forms
                                 }
                             }));
                             break;
-                        case "newDirAnswer":
-                                Application.Current.Dispatcher.Invoke(new Action(() =>
-                                {
-                                    Draw(msg.DirName, true, msg.Dir);
-                                }));
-                                break;
+                        case "newDir":
+                            if (Directory != msg.Dir) break;
+                            Application.Current.Dispatcher.Invoke(new Action(() =>
+                            {
+                                Draw(msg.DirName, true, msg.Dir);
+                            }));
+                            break;
                     }
                 }
             });
@@ -160,7 +211,7 @@ namespace MySweetyPhone_PC.Forms
             Back sd = new Back();
             sd.Type = "back";
             sd.Name = App.name;
-            sd.Dir = Path.Text;
+            sd.Dir = Directory;
             if (sc.mode != 0) sd.Code = App.code % sc.mode;
             writer.WriteLine(JsonConvert.SerializeObject(sd));
             writer.Flush();
@@ -170,55 +221,61 @@ namespace MySweetyPhone_PC.Forms
         {
             InputDialog id = new InputDialog("Имя папки","Введите имя папки");
             id.ShowDialog();
-            Console.WriteLine(id.Result.Text);
+            if (id.GetResult() == null) return;
             ShowDir sd = new ShowDir();
             sd.Type = "newDir";
             sd.Name = App.name;
-            sd.Dir = Path.Text;
-            sd.DirName = id.Result.Text;
+            sd.Dir = Directory;
+            sd.DirName = id.GetResult();
             if (sc.mode != 0) sd.Code = App.code % sc.mode;
             writer.WriteLine(JsonConvert.SerializeObject(sd));
             writer.Flush();
         }
 
+        class UploadFile
+        {
+
+        }
         public void uploadFile(object sender, RoutedEventArgs e)
         {
-            /*
-            FileChooser fc = new FileChooser();
-            fc.setTitle("Выберите файл для загрузки");
-            final File file = fc.showOpenDialog(null);
-            if (file == null) return;
+            OpenFileDialog ofd = new OpenFileDialog();
 
-            new Thread(()-> {
-            try
+            ofd.RestoreDirectory = true;
+
+            if (ofd.ShowDialog() != true)
+                return;
+            string fileName = ofd.FileName;
+            Download download = new Download();
+            download.Type = "uploadFile";
+            download.Name = App.name;
+            download.Dir = Directory;
+            download.FileName = System.IO.Path.GetFileName(fileName);
+            new Thread(() =>
             {
-                ServerSocket ss = new ServerSocket(0);
-                JSONObject msg2 = new JSONObject();
-                msg2.put("Type", "uploadFile");
-                msg2.put("Name", name);
-                if (!login.isEmpty()) msg2.put("Login", login);
-                msg2.put("FileName", file.getName());
-                msg2.put("FileSocketPort", ss.getLocalPort());
-                msg2.put("Dir", Path.getText());
-                writer.println(msg2.toJSONString());
-                writer.flush();
-                Socket socket = ss.accept();
-                DataOutputStream fileout = new DataOutputStream(socket.getOutputStream());
-                FileInputStream filein = new FileInputStream(file);
-                IOUtils.copy(filein, fileout);
-                fileout.flush();
-                filein.close();
-                socket.close();
-                Platform.runLater(()->{
-                    Main.trayIcon.displayMessage("Отправка завершена", "Файл \"" + file.getName() + "\" загружен", TrayIcon.MessageType.INFO);
-                    reloadFolder(null);
-                });
-            }
-            catch (IOException e)
-            {
-                e.printStackTrace();
-            }
-        }).start();*/
+                using (FileStream fstream = new FileStream(fileName, FileMode.Open))
+                {
+                    Socket uploadSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                    uploadSocket.Bind(new IPEndPoint(IPAddress.Any, 0));
+                    download.FileSocketPort = (uploadSocket.LocalEndPoint as IPEndPoint).Port;
+                    if (sc.mode != 0) download.Code = App.code % sc.mode;
+                    writer.WriteLine(JsonConvert.SerializeObject(download));
+                    writer.Flush();
+                    uploadSocket.Listen(1);
+                    Socket uploadSocketConnected = uploadSocket.Accept();
+                    NetworkStream ns = new NetworkStream(uploadSocketConnected);
+                    fstream.CopyTo(ns);
+                    ns.Flush();
+                    ns.Close();
+                    uploadSocketConnected.Close();
+                    uploadSocket.Close();
+                    Application.Current.Dispatcher.Invoke(new Action(() =>
+                    {
+                        InfoDialog id = new InfoDialog("Отправка завершена", "Отправка файла " + System.IO.Path.GetFileName(fileName) + " завершена");
+                        id.Show();
+                        Draw(System.IO.Path.GetFileName(fileName), false, System.IO.Path.GetDirectoryName(fileName));
+                    }));
+                }
+            }).Start();
         }
 
         public void reloadFolder(object sender, RoutedEventArgs e)
@@ -226,14 +283,14 @@ namespace MySweetyPhone_PC.Forms
             ShowDir sd = new ShowDir();
             sd.Type = "showDir";
             sd.Name = App.name;
-            sd.Dir = Path.Text;
+            sd.Dir = Directory;
             sd.DirName = "";
             if (sc.mode != 0) sd.Code = App.code % sc.mode;
             writer.WriteLine(JsonConvert.SerializeObject(sd));
             writer.Flush();
         }
 
-        public void Draw(String fileName, bool isFolder, String dir)
+        public void Draw(string fileName, bool isFolder, String dir)
         {
 
             StackPanel sp = new StackPanel();
@@ -254,6 +311,87 @@ namespace MySweetyPhone_PC.Forms
             lvi.Content = sp;
             FilesList.Items.Add(lvi);
 
+            ContextMenu menu = new ContextMenu();
+            lvi.ContextMenu = menu;
+            MenuItem delete = new MenuItem();
+            delete.Header = "Удалить";
+            menu.Items.Add(delete);
+            delete.Click += delegate
+            {
+                Delete del = new Delete();
+                del.Type = "deleteFile";
+                del.Name = App.name;
+                del.Dir = dir;
+                del.FileName = fileName;
+                if (sc.mode != 0) del.Code = App.code % sc.mode;
+                writer.WriteLine(JsonConvert.SerializeObject(del));
+                writer.Flush();
+            };
+            MenuItem rename = new MenuItem();
+            rename.Header = "Переименовать";
+            menu.Items.Add(rename);
+            rename.Click += delegate
+            {
+                InputDialog id = new InputDialog("Имя файла", "Введите имя файла", fileName);
+                id.ShowDialog();
+                if (id.GetResult() == null) return;
+                Rename rn = new Rename();
+                rn.Type = "renameFile";
+                rn.Name = App.name;
+                rn.Dir = Directory;
+                rn.FileName = fileName;
+                rn.NewFileName = id.GetResult();
+
+                if (sc.mode != 0) rn.Code = App.code % sc.mode;
+                writer.WriteLine(JsonConvert.SerializeObject(rn));
+                writer.Flush();
+            };
+
+            if (!isFolder)
+            {
+                MenuItem Download = new MenuItem();
+                Download.Header = "Загрузить";
+                menu.Items.Add(Download);
+                Download.Click += delegate
+                {
+                    SaveFileDialog sfd = new SaveFileDialog();
+                    string ext = System.IO.Path.GetExtension(fileName);
+                    sfd.Filter = ext.Substring(1,ext.Length-1).ToUpper()+" file|*" + ext + "|All files(*.*)|*.*";
+                    if(sfd.ShowDialog() != true)
+                        return;
+                    new Thread(() =>
+                    {
+                        using (FileStream fstream = new FileStream(sfd.FileName, FileMode.Create))
+                        {
+                            Socket downloadSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                            downloadSocket.Bind(new IPEndPoint(IPAddress.Any, 0));
+                            Download download = new Download();
+                            download.Type = "downloadFile";
+                            download.Name = App.name;
+                            download.Dir = dir;
+                            download.FileName = fileName;
+                            download.FileSocketPort = (downloadSocket.LocalEndPoint as IPEndPoint).Port;
+                            if (sc.mode != 0) download.Code = App.code % sc.mode;
+                            writer.WriteLine(JsonConvert.SerializeObject(download));
+                            writer.Flush();
+                            downloadSocket.Listen(1);
+                            Socket downloadSocketConnected = downloadSocket.Accept();
+                            NetworkStream ns = new NetworkStream(downloadSocketConnected);
+                            ns.CopyTo(fstream);
+                            ns.Close();
+                            downloadSocketConnected.Close();
+                            downloadSocket.Close();
+                            Application.Current.Dispatcher.Invoke(new Action(() =>
+                            {
+                                InfoDialog id = new InfoDialog("Загрузка завершена", "Загрузка файла " + fileName + " завершена");
+                                id.Show();
+                            }));
+                        }
+                    }).Start();
+                };
+            }
+
+            lvi.PreviewMouseRightButtonDown += delegate (object sender, MouseButtonEventArgs e) { e.Handled = true;};
             lvi.Selected += delegate
             {
                 if (isFolder)
@@ -267,92 +405,7 @@ namespace MySweetyPhone_PC.Forms
                     writer.WriteLine(JsonConvert.SerializeObject(sd));
                     writer.Flush();
                 }
-                else
-                {
-                    //TODO доделать скачку
-                }
             };
-            /*
-        Label folder = new Label(fileName);
-        files.add(fileName);
-        folder.setPadding(new Insets(20, 20, 20, 20));
-        folder.setFont(new Font(14));
-        Folders.getChildren().add(folder);
-
-        final ContextMenu contextMenu = new ContextMenu();
-        javafx.scene.control.MenuItem delete = new javafx.scene.control.MenuItem("Удалить");
-        contextMenu.getItems().addAll(delete);
-        delete.setOnAction(event -> {
-        new Thread(()-> {
-                JSONObject msg2 = new JSONObject();
-        msg2.put("Type", "deleteFile");
-        msg2.put("Name", name);
-        if (!login.isEmpty()) msg2.put("Login", login);
-        msg2.put("FileName", fileName);
-        msg2.put("Dir", dir);
-        writer.println(msg2.toJSONString());
-        writer.flush();
-        }).start();
-
-        });
-
-        if(isFolder) {
-            folder.setText("📁 " + folder.getText());
-            folder.setOnMouseClicked(v -> {
-                if(v.getButton() == MouseButton.PRIMARY) new Thread(() -> {
-            JSONObject msg3 = new JSONObject();
-            msg3.put("Type", "showDir");
-            msg3.put("Name", name);
-            if (!login.isEmpty()) msg3.put("Login", login);
-            msg3.put("Dir", dir);
-            msg3.put("DirName", fileName);
-            writer.println(msg3.toJSONString());
-            writer.flush();
-        }).start();
-        });
-        }else {
-            folder.setText("📄 "+folder.getText());
-            javafx.scene.control.MenuItem save = new javafx.scene.control.MenuItem("Сохранить как");
-        contextMenu.getItems().addAll(save);
-        save.setOnAction(v -> {
-                DirectoryChooser fc = new DirectoryChooser();
-        fc.setTitle("Выберите папку для сохранения");
-                final File out = fc.showDialog(null);
-                if (out == null) return;
-                new Thread(() -> {
-        try
-        {
-        File out3 = new File(out, "MySweetyPhone");
-        out3.mkdirs();
-        File out2 = new File(out3, fileName);
-
-        ServerSocket ss = new ServerSocket(0);
-        JSONObject msg2 = new JSONObject();
-        msg2.put("Type", "downloadFile");
-        msg2.put("Name", name);
-        if (!login.isEmpty()) msg2.put("Login", login);
-        msg2.put("FileName", fileName);
-        msg2.put("FileSocketPort", ss.getLocalPort());
-        msg2.put("Dir", dir);
-        writer.println(msg2.toJSONString());
-        writer.flush();
-        Socket socket = ss.accept();
-        DataInputStream filein = new DataInputStream(socket.getInputStream());
-        FileOutputStream fileout = new FileOutputStream(out2);
-        IOUtils.copy(filein, fileout);
-        fileout.close();
-        socket.close();
-        Platform.runLater(()->Main.trayIcon.displayMessage("Загрузка завершена", "Файл \"" + out2.getName() + "\" загружен", TrayIcon.MessageType.INFO));
-        }
-        catch (IOException e)
-        {
-        e.printStackTrace();
-        }
-        }).start();
-            });
-        }
-        folder.setOnContextMenuRequested((EventHandler<Event>) event -> contextMenu.show(folder, MouseInfo.getPointerInfo().getLocation().x, MouseInfo.getPointerInfo().getLocation().y));
-        */
         }
     }
 }
